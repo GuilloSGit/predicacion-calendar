@@ -28,7 +28,7 @@ import sys
 from dataclasses import dataclass, field
 
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
-DEFAULT_CALENDAR_NAME = "Predicacion"
+DEFAULT_CALENDAR_NAME = "Predicacion - Congre Media Agua"
 DEFAULT_TZ = "America/Argentina/San_Juan"
 DEFAULT_DURATION_MIN = 120
 DEFAULT_REMINDER_MIN = 30
