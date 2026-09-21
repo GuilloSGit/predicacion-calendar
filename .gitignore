@@ -1,0 +1,9 @@
+*.pyc
+.env
+__pycache__/
+credentials.json
+gemini_key.txt
+mi-semana.txt
+semana-*.txt
+token.json
+venv/
