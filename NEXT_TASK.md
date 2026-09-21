@@ -15,7 +15,6 @@ navegador. No probado en vivo (requiere login del usuario).
 
 PRÓXIMO:
 1. Confirmar que el usuario pudo sincronizar las 10 salidas del 22-27 sept 2026 tras reautorizar.
-2. Que el usuario pase el consent screen (proyecto Google Cloud `sync-salidas`) a "In production".
 3. Si vuelve a fallar, revisar que token.json se reescriba y que gui.py muestre el error legible.
 
 CONTEXTO: modelos Gemini en cascada en extract.py (MODELOS); key en gemini_key.txt; credentials.json,
