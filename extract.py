@@ -104,7 +104,7 @@ def image_to_txt(image_path: str, api_key: str | None = None,
 
     from google.genai import errors
 
-    client = genai.Client(api_key=key)
+    client = genai.Client(api_key=key, http_options=types.HttpOptions(timeout=60_000))
     contents = [
         types.Part.from_bytes(data=data, mime_type=mime),
         PROMPT.format(anio=anio),
@@ -115,6 +115,7 @@ def image_to_txt(image_path: str, api_key: str | None = None,
     for modelo in MODELOS:
         for intento in range(4):
             try:
+                print(f"   {modelo} (intento {intento + 1}/4)…", flush=True)
                 resp = client.models.generate_content(model=modelo, contents=contents)
                 texto = (resp.text or "").strip()
                 if texto:
@@ -123,14 +124,22 @@ def image_to_txt(image_path: str, api_key: str | None = None,
             except errors.ClientError as e:
                 if getattr(e, "status_code", None) == 404:  # modelo inexistente: probar el siguiente
                     ultimo_error = e
+                    print(f"   {modelo}: no disponible, pruebo el siguiente.", flush=True)
                     break
                 if getattr(e, "status_code", None) == 429:  # rate limit: esperar y reintentar
                     ultimo_error = e
+                    print("   limite de uso (429), reintento…", flush=True)
                     time.sleep(2 * (intento + 1))
                     continue
                 raise
             except errors.ServerError as e:  # 503 alta demanda, 500: reintentar
                 ultimo_error = e
+                print(f"   Gemini con alta demanda ({e.status_code}), reintento…", flush=True)
+                time.sleep(2 * (intento + 1))
+                continue
+            except Exception as e:  # noqa: BLE001  timeout / red
+                ultimo_error = e
+                print(f"   {type(e).__name__}: {e}. Reintento…", flush=True)
                 time.sleep(2 * (intento + 1))
                 continue
         else:
